@@ -1,0 +1,64 @@
+# DDL - create database
+CREATE DATABASE store;
+
+# DDL - create tables
+CREATE TABLE countries (
+  code INTEGER PRIMARY KEY,
+  name varchar(20) unique,
+  continent_name varchar(20) NOT NULL
+);
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY,
+  full_name varchar(20),
+  email varchar(20) unique,
+  gender char(1) check (gender='m' or gender='f'),
+  date_of_birth varchar(15),
+  country_code int,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  foreign key (country_code) references countries(code)
+);
+CREATE TABLE orders (
+  id INTEGER PRIMARY KEY,
+  user_id INTEGER,
+  status varchar(6) check (status='start' or status='finish'),
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  foreign key (user_id) references users(id)
+);
+CREATE TABLE products (
+  id INTEGER PRIMARY KEY,
+  name varchar(10) NOT NULL,
+  price INTEGER DEFAULT 0,
+  status varchar(10) check (status='valid' or status='expired'),
+  created_at datetime DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE order_products (
+  order_id INTEGER,
+  product_id INTEGER ,
+  quantity INTEGER DEFAULT 0,
+  PRIMARY KEY (order_id, product_id),
+  foreign key (order_id) references orders(id),
+  foreign key (product_id) references products(id)
+);
+
+# DML - insert
+INSERT INTO countries VALUES (0001, 'saudi', 'asia');
+INSERT INTO users (id, full_name, email, gender, date_of_birth, country_code) VALUES (0001,'amal hassan', 'amal@amal.com', 'f', '2/2/2222',0001);
+INSERT INTO orders (id, user_id, status) VALUES (0001,0001, 'start');
+INSERT INTO products (id, name, price, status) VALUES (0001,'PC', 10000, 'valid');
+INSERT INTO order_products (order_id, product_id, quantity) VALUES (0001,0001,50);
+
+# DML - update
+update countries set countries.name='Saudi Arabia' where code=0001;
+
+# DML - delete / it will not delete because there is another row reffered to it.
+delete from products where id=0001;
+
+# DQL - Select 
+SELECT * FROM countries;
+SELECT * FROM users;
+SELECT * FROM orders;
+SELECT * FROM products;
+SELECT * FROM order_products;
+
+
+
